@@ -19,16 +19,16 @@ public_users.get('/',function (req, res) {
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
     // Retrieve the ISBN parameter from the request URL and send the corresponding <VAR>'s details
-    const isbn = req.params.isbn;
+    let isbn = req.params.isbn;
     res.send(books[isbn]);
 });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-    const author = req.params.author;
-    const match = [];
+    let author = req.params.author;
+    let match = [];
 
-    const keys = Object.keys(books);
+    let keys = Object.keys(books);
 
     keys.forEach(function (key) {
         if (books[key].author === author) {
@@ -41,14 +41,27 @@ public_users.get('/author/:author',function (req, res) {
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    let title = req.params.title;
+    let match = [];
+
+    let keys = Object.keys(books);
+
+    keys.forEach(function (key) {
+        if (books[key].title === title) {
+            match.push(books[key]);
+        }
+    });
+
+    res.send(JSON.stringify(match));
 });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    // Retrieve the ISBN parameter from the request URL and send the corresponding <VAR>'s details
+    let isbn = req.params.isbn;
+    let match = books[isbn];
+
+    res.send(match.reviews || {});
 });
 
 module.exports.general = public_users;
