@@ -18,7 +18,7 @@ public_users.get('/',function (req, res) {
 
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
-    // Retrieve the ISBN parameter from the request URL and send the corresponding <VAR>'s details
+    // Retrieve the ISBN parameter from the request URL and send the corresponding books's details
     let isbn = req.params.isbn;
     res.send(books[isbn]);
 });
@@ -57,7 +57,7 @@ public_users.get('/title/:title',function (req, res) {
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-    // Retrieve the ISBN parameter from the request URL and send the corresponding <VAR>'s details
+    // Retrieve the ISBN parameter from the request URL, match the fetched books's details and buffer it into a variable
     let isbn = req.params.isbn;
     let match = books[isbn];
 
