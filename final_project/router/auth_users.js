@@ -33,7 +33,8 @@ regd_users.post("/login", (req,res) => {
     if (authenticatedUser(username, password)) {
         // Generate JWT access token
         let accessToken = jwt.sign({
-            data: password
+            data: password,
+            username:username
         }, 'access', { expiresIn: 60 * 60 });
 
         // Store access token and username in session
@@ -49,9 +50,39 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const username = req.session.username;
+  const isbn = req.params.isbn;
+  const review = req.query.review;
+
+  if (!isbn || !username || !review) {
+    return res.status(400).json({ message: "Error: Invalid request!" });
+  }
+
+  if (!books[isbn]) {
+    return res.status(400).json({ message: "Error: Invalid ISBN!" });
+  }
+
+  books[isbn].reviews[username] = review;
+
+  return res.status(200).json({
+    message: "Review added successfully!"
+  });
 });
+  
+  regd_users.delete("/auth/review/:isbn", (req, res) => {
+    const isbn = req.params.isbn;
+    const username = req.body.username;
+    if(!isbn||!username){
+      return res.status(400).json({message: "Error: Invalid request!"});
+    }
+    if(!isValid(username)){
+      return res.status(400).json({message: "Error: Invalid username!"});   
+    }
+    if(!books[isbn]){
+      return res.status(400).json({message: "Error: Invalid ISBN!"});
+    }
+    delete books[isbn].reviews[username];
+  });
 
 module.exports.authenticated = regd_users;
 module.exports.isValid = isValid;
