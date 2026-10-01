@@ -41,7 +41,7 @@ public_users.get('/isbn/:isbn',async function (req, res) {
 
         if (!books[isbn]) {
 
-            res.status(500).send("There is no book with the ISBN " + isbn);
+            res.status(404).send("There is no book with the ISBN " + isbn);
 
         } else {
 
@@ -65,28 +65,16 @@ try {
     let keys = Object.keys(books);
 
     keys.forEach(function (key) {
-
         if (books[key].author === author) {
-            match.push(books[key]);
-            matchcheck = true;
-        } else {
-            matchcheck = false;
+            match.push(key, books[key]);
         }
     });
 
     const bookAuthorData = await Promise.resolve(match);
-
-    if (matchcheck = false) {
-
-        res.status(500).send("There is no book with the Author " + author);
-
-    } else {
-
     res.status(200).send(JSON.stringify(bookAuthorData));
 
-    }
+    } catch (error) {
 
-  } catch (error) {
     console.error(error);
     res.status(500).send("Cannot resolve request.");
   }
@@ -112,7 +100,7 @@ public_users.get('/title/:title',async function (req, res) {
 
 } catch (error) {
     console.error(error);
-    res.status(500).send("Unable to retrieve books");
+    res.status(500).send("Cannot resolve request.");
   }
 });
 
