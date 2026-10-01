@@ -24,10 +24,10 @@ public_users.post("/register", (req,res) => {
 public_users.get("/", async function (req, res) {
     try {
       const bookData = await Promise.resolve(books);
-      res.json(bookData);
+      res.status(200).json(bookData);
     } catch (error) {
       console.error(error);
-      res.status(500).send("Unable to retrieve books");
+      res.status(500).send("Unable to retrieve the books database.");
     }
   });
 
@@ -38,11 +38,20 @@ public_users.get('/isbn/:isbn',async function (req, res) {
     try {
         let isbn = req.params.isbn;
         const bookISBNData = await Promise.resolve(books[isbn]);
-        res.json(bookISBNData);
+
+        if (!books[isbn]) {
+
+            res.status(500).send("There is no book with the ISBN " + isbn);
+
+        } else {
+
+        res.status(200).json(bookISBNData);
+
+        }
 
       } catch (error) {
         console.error(error);
-        res.status(500).send("Unable to retrieve books");
+        res.status(500).send("Cannot resolve request.");
       }
     });
   
@@ -56,15 +65,30 @@ try {
     let keys = Object.keys(books);
 
     keys.forEach(function (key) {
+
         if (books[key].author === author) {
             match.push(books[key]);
+            matchcheck = true;
+        } else {
+            matchcheck = false;
         }
     });
+
     const bookAuthorData = await Promise.resolve(match);
-    res.send(JSON.stringify(bookAuthorData));
-} catch (error) {
+
+    if (matchcheck = false) {
+
+        res.status(500).send("There is no book with the Author " + author);
+
+    } else {
+
+    res.status(200).send(JSON.stringify(bookAuthorData));
+
+    }
+
+  } catch (error) {
     console.error(error);
-    res.status(500).send("Unable to retrieve books");
+    res.status(500).send("Cannot resolve request.");
   }
 });
 
@@ -84,7 +108,7 @@ public_users.get('/title/:title',async function (req, res) {
     });
 
     const bookTitleData = await Promise.resolve(match);
-    res.send(JSON.stringify(bookTitleData));
+    res.status(200).send(JSON.stringify(bookTitleData));
 
 } catch (error) {
     console.error(error);
@@ -98,7 +122,7 @@ public_users.get('/review/:isbn',function (req, res) {
     let isbn = req.params.isbn;
     let match = books[isbn];
 
-    res.send(match.reviews || {});
+    res.status(200).send(match.reviews || {});
 });
 
 module.exports.general = public_users;
