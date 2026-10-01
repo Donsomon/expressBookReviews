@@ -34,14 +34,14 @@ regd_users.post("/login", (req,res) => {
         // Generate JWT access token
         let accessToken = jwt.sign({
             data: password,
-            username:username
+            username: username
         }, 'access', { expiresIn: 60 * 60 });
 
         // Store access token and username in session
         req.session.authorization = {
             accessToken, username
         }
-        return res.status(200).send("User successfully logged in");
+        return res.status(200).send("User successfully logged in " + username);
     } else {
         return res.status(208).json({ message: "Invalid Login. Check username and password" });
     }
@@ -50,9 +50,9 @@ regd_users.post("/login", (req,res) => {
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  const username = req.session.username;
-  const isbn = req.params.isbn;
-  const review = req.query.review;
+  let username = req.session.authorization.username;
+  let isbn = req.params.isbn;
+  let review = req.query.review;
 
   if (!isbn || !username || !review) {
     return res.status(400).json({ message: "Error: Invalid request!" });
